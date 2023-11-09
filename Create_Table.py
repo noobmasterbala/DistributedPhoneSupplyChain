@@ -1,4 +1,4 @@
-x# This it the code to create a database in postgreSQL
+# This it the code to create a database in postgreSQL
 import psycopg2
 
 # This is my username
