@@ -1,10 +1,10 @@
-# This it the code to create a database in postgreSQL
+x# This it the code to create a database in postgreSQL
 import psycopg2
 
 # This is my username
 MY_USERNAME='postgres'
 # This is my personal password
-PASSWORD='Vathsa@12345'
+PASSWORD='0000'
 
 # SQL statements to create tables
 create_tables_sql = [
