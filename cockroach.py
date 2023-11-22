@@ -12,6 +12,17 @@ with conn.cursor() as cur:
 
 
     # SQL statements to create tables
+drop_table_sql=["""    
+    DROP TABLE IF EXISTS Supplier;
+    DROP TABLE IF EXISTS Inventory;
+    DROP TABLE IF EXISTS OrderDetails;
+    DROP TABLE IF EXISTS MobilePhone;
+    DROP TABLE IF EXISTS Warehouse;
+    DROP TABLE IF EXISTS Orders;
+    DROP TABLE IF EXISTS Manufacturer;            
+    """]
+
+
 create_tables_sql = [
     """
     CREATE TABLE Supplier (
@@ -48,14 +59,21 @@ create_tables_sql = [
     """,
     """
     CREATE TABLE Inventory (
-        InventoryID SERIAL PRIMARY KEY,
+        InventoryID SERIAL,
         MobilePhoneID INT,
         WarehouseID INT,
         Quantity INT,
         PurchaseDate DATE,
         FOREIGN KEY (MobilePhoneID) REFERENCES MobilePhone(MobilePhoneID),
-        FOREIGN KEY (WarehouseID) REFERENCES Warehouse(WarehouseID)
+        FOREIGN KEY (WarehouseID) REFERENCES Warehouse(WarehouseID),
+        PRIMARY KEY (InventoryID)
     )
+    """,
+    """
+   ALTER TABLE Inventory PARTITION BY RANGE (InventoryID) (
+    PARTITION Inventory_P1 VALUES FROM (MINVALUE) TO (100),
+    PARTITION Inventory_P2 VALUES FROM (101) TO (200)
+    );
     """,
     """
     CREATE TABLE Orders (
@@ -72,7 +90,6 @@ create_tables_sql = [
         OrderID INT,
         MobilePhoneID INT,
         Quantity INT,
-        Subtotal DECIMAL(10, 2),
         FOREIGN KEY (OrderID) REFERENCES Orders(OrderID),
         FOREIGN KEY (MobilePhoneID) REFERENCES MobilePhone(MobilePhoneID)
     )
@@ -86,12 +103,16 @@ def create_database_tables():
         cursor = conn.cursor()
 
         # Create tables
+        for drop_table in drop_table_sql:
+            cursor.execute(drop_table)
+            conn.commit()
+        print("dropped all tables")
+
         for create_table_sql in create_tables_sql:
             cursor.execute(create_table_sql)
-
-        # Commit the changes
+            # print("executed table ", create_table_sql )
         conn.commit()
-        print("Tables created successfully!")
+        print("Tables created successfully!")        
 
     except (Exception, psycopg2.DatabaseError) as error:
         print(f"Error: {error}")
