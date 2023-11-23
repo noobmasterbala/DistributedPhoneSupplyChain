@@ -128,6 +128,27 @@ import os
 import csv
 import psycopg2
 
+def add_index_to_supplier(column_name, index_name=None): #had some issues with cockroach db, will have to test indexing.
+    conn = psycopg2.connect(os.environ["DATABASE_URL"])
+    
+    try:
+        with conn.cursor() as cur:
+            # If index name is not provided, let PostgreSQL handle the naming
+            if not index_name:
+                index_name = f"idx_{column_name}"
+
+            create_index_sql = f"CREATE INDEX {index_name} ON Supplier ({column_name});"
+
+            cur.execute(create_index_sql)
+            conn.commit()
+            print(f"Index '{index_name}' created on column '{column_name}' in Supplier table.")
+
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(f"Error: {error}")
+
+    finally:
+        conn.close()
+
 def insert_supplier_data_from_csv(csv_file_path):
     conn = psycopg2.connect(os.environ["DATABASE_URL"])
 
