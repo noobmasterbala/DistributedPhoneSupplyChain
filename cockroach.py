@@ -230,6 +230,92 @@ def insert_warehouse_data_from_csv(csv_file_path):
         conn.close()
 
 
+from datetime import datetime
+
+def insert_inventory_data_from_csv(csv_file_path):
+    conn = psycopg2.connect(os.environ["DATABASE_URL"])
+
+    try:
+        with conn.cursor() as cur:
+            with open(csv_file_path, 'r') as csvfile:
+                csvreader = csv.DictReader(csvfile)
+
+                for row in csvreader:
+                    # Adjust the format for the 'm/d/yy' date format
+                    purchase_data = row['PurchaseDate']
+                    purchase_date = datetime.strptime(purchase_data, '%m/%d/%y')
+
+                    # Insert data into the Inventory table
+                    cur.execute("""
+                        INSERT INTO Inventory (InventoryID, MobilePhoneID, WarehouseID, Quantity, PurchaseDate)
+                        VALUES (%s, %s, %s, %s, %s)
+                    """, (row['InventoryID'], row['MobilePhoneID'], row['WarehouseID'], row['Quantity'], purchase_date))
+
+            conn.commit()
+            print("Data inserted into the Inventory table successfully!")
+
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(f"Error: {error}")
+
+    finally:
+        conn.close()
+
+
+def insert_orders_data_from_csv(csv_file_path):
+    conn = psycopg2.connect(os.environ["DATABASE_URL"])
+
+    try:
+        with conn.cursor() as cur:
+            with open(csv_file_path, 'r') as csvfile:
+                csvreader = csv.DictReader(csvfile)
+
+                for row in csvreader:
+                    # Adjust the format for the 'm/d/yyyy' date format
+                    order_date = datetime.strptime(row['OrderDate'], '%m/%d/%Y')
+                    delivery_date = datetime.strptime(row['DeliveryDate'], '%m/%d/%Y') if row['DeliveryDate'] else None
+
+                    # Insert data into the Orders table
+                    cur.execute("""
+                        INSERT INTO Orders (OrderID, CustomerName, OrderDate, DeliveryDate, Status)
+                        VALUES (%s, %s, %s, %s, %s)
+                    """, (row['OrderID'], row['CustomerName'], order_date, delivery_date, row['Status']))
+
+            conn.commit()
+            print("Data inserted into the Orders table successfully!")
+
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(f"Error: {error}")
+
+    finally:
+        conn.close()
+
+def insert_order_details_data_from_csv(csv_file_path):
+    conn = psycopg2.connect(os.environ["DATABASE_URL"])
+
+    try:
+        with conn.cursor() as cur:
+            with open(csv_file_path, 'r') as csvfile:
+                csvreader = csv.DictReader(csvfile)
+
+                for row in csvreader:
+                    # Insert data into the OrderDetails table
+                    cur.execute("""
+                        INSERT INTO OrderDetails (OrderDetailID, OrderID, MobilePhoneID, Quantity)
+                        VALUES (%s, %s, %s, %s)
+                    """, (row['OrderDetailID'], row['OrderID'], row['MobilePhoneID'], row['Quantity']))
+
+            conn.commit()
+            print("Data inserted into the OrderDetails table successfully!")
+
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(f"Error: {error}")
+
+    finally:
+        conn.close()
+
+
+
+
 
 if __name__ == "__main__":
     # create_database_tables()
@@ -237,8 +323,8 @@ if __name__ == "__main__":
     # insert_manufacturer_data_from_csv('InputData/Manufacturer.csv')
     # insert_mobilephone_data_from_csv('InputData/MobilePhone.csv')
     # insert_warehouse_data_from_csv('InputData/Warehouse.csv')
-    
+    # insert_inventory_data_from_csv('InputData/Inventory.csv')
+    # insert_orders_data_from_csv('InputData/Order.csv')
+    # insert_order_details_data_from_csv('InputData/OrderDetails.csv')
 
-
-
-
+    pass
