@@ -1,5 +1,6 @@
 import os
 import csv
+import time
 import psycopg2
 from datetime import datetime
 from create_table_calls import create_database_tables, insert_supplier_data_from_csv, insert_manufacturer_data_from_csv
@@ -119,16 +120,53 @@ def vertical_fragmentation():
     except Exception as E:
         print(E)
 
+
+def check_index_performance(table_name, column_name, search_value):
+    conn = psycopg2.connect(os.environ["DATABASE_URL"])
+    cursor = conn.cursor()
+    try:
+        # Construct the query
+        query = f"SELECT * FROM {table_name} WHERE {column_name} = %s"
+        start_time = time.time()
+
+        # Execute the query
+        cursor.execute(query, (search_value,))
+
+        # Fetch the results (optional, depending on whether you want to see the data)
+        results = cursor.fetchall()
+
+        # Measure the time taken
+        end_time = time.time()
+        time_taken = end_time - start_time
+
+        print(f"Query executed in {time_taken:.4f} seconds")
+
+        # Optionally print the results
+        for row in results:
+            print(row)
+
+    except Exception as error:
+        print(f"Error executing query: {error}")
+    finally:
+        cursor.close()
+        conn.close()
+
+
+
 if __name__ == "__main__":
-    #create_database_tables(drop_table_sql,create_tables_sql)
-    #insert_supplier_data_from_csv('InputData/Supplier.csv')
-    #insert_manufacturer_data_from_csv('InputData/Manufacturer.csv')
+    # create_database_tables(drop_table_sql,create_tables_sql)
+    # insert_supplier_data_from_csv('InputData/Supplier.csv')
+    # insert_manufacturer_data_from_csv('InputData/Manufacturer.csv')
     # insert_mobilephone_data_from_csv('InputData/MobilePhone.csv')
     # insert_warehouse_data_from_csv('InputData/Warehouse.csv')
     # insert_inventory_data_from_csv('InputData/Inventory.csv')
     # insert_orders_data_from_csv('InputData/Order.csv')
     # insert_order_details_data_from_csv('InputData/OrderDetails.csv')
     # vertical_fragmentation()
-    create_index('Supplier', 'SupplierName')
-    create_index('Inventory', 'Quantity')
+    #create_index('Supplier', 'SupplierName')
+    #create_index('Inventory', 'Quantity')
+    create_index('OrderDetails', 'OrderID') #178
+    check_index_performance('OrderDetails', 'OrderID', '178')
+
+
     pass
