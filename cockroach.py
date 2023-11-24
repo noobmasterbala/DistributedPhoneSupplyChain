@@ -1,4 +1,7 @@
-
+import os
+import csv
+import psycopg2
+from datetime import datetime
 from create_table_calls import create_database_tables, insert_supplier_data_from_csv, insert_manufacturer_data_from_csv
 from create_table_calls import insert_mobilephone_data_from_csv, insert_warehouse_data_from_csv, insert_inventory_data_from_csv
 from create_table_calls import insert_orders_data_from_csv, insert_order_details_data_from_csv
@@ -62,7 +65,7 @@ create_tables_sql = [
     )
     """,
     """
-   ALTER TABLE Inventory PARTITION BY RANGE (InventoryID) (
+    ALTER TABLE Inventory PARTITION BY RANGE (InventoryID) (
     PARTITION Inventory_P1 VALUES FROM (MINVALUE) TO (100),
     PARTITION Inventory_P2 VALUES FROM (101) TO (200)
     );
@@ -88,6 +91,32 @@ create_tables_sql = [
     """
 ]
 
+def vertical_fragmentation():
+    conn = psycopg2.connect(os.environ["DATABASE_URL"])
+    cursor = conn.cursor()
+    try:
+        cursor.execute("CREATE TABLE IF NOT EXISTS Supplier_Name (SupplierID SERIAL PRIMARY KEY, SupplierName VARCHAR(255))")
+        cursor.execute("CREATE TABLE IF NOT EXISTS Supplier_Contact (SupplierID INT PRIMARY KEY, ContactInfo TEXT, Address TEXT)")
+
+        # Insert data into Supplier_Name and Supplier_Contact during vertical fragmentation
+        cursor.execute("INSERT INTO Supplier_Name (SupplierID, SupplierName) SELECT SupplierID, SupplierName FROM Supplier")
+        cursor.execute("INSERT INTO Supplier_Contact (SupplierID, ContactInfo, Address) SELECT SupplierID, ContactInfo, Address FROM Supplier")
+
+
+        # Fetch and display data from the fragmented tables
+        cursor.execute("SELECT * FROM Supplier_Name")
+        supplier_name_data = cursor.fetchall()
+        print("Supplier_Name Table (Vertical Fragmentation):")
+        for row in supplier_name_data:
+            print(row)
+
+        cursor.execute("SELECT * FROM Supplier_Contact")
+        supplier_contact_data = cursor.fetchall()
+        print("Supplier_Contact Table (Vertical Fragmentation):")
+        for row in supplier_contact_data:
+            print(row)
+    except Exception as E:
+        print(E)
 
 if __name__ == "__main__":
     create_database_tables(drop_table_sql,create_tables_sql)
@@ -98,4 +127,5 @@ if __name__ == "__main__":
     insert_inventory_data_from_csv('InputData/Inventory.csv')
     insert_orders_data_from_csv('InputData/Order.csv')
     insert_order_details_data_from_csv('InputData/OrderDetails.csv')
+    vertical_fragmentation()
     pass
