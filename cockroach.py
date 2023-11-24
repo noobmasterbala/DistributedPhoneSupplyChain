@@ -7,6 +7,7 @@ from create_table_calls import create_database_tables, insert_supplier_data_from
 from create_table_calls import insert_mobilephone_data_from_csv, insert_warehouse_data_from_csv, insert_inventory_data_from_csv
 from create_table_calls import insert_orders_data_from_csv, insert_order_details_data_from_csv
 from create_indexing import create_index
+from create_caching import get_data_with_caching
 
     # SQL statements to create tables
 drop_table_sql=["""    
@@ -165,8 +166,26 @@ if __name__ == "__main__":
     # vertical_fragmentation()
     #create_index('Supplier', 'SupplierName')
     #create_index('Inventory', 'Quantity')
-    create_index('OrderDetails', 'OrderID') #178
-    check_index_performance('OrderDetails', 'OrderID', '178')
+    #create_index('OrderDetails', 'OrderID')
+    #check_index_performance('OrderDetails', 'OrderID', '178')
+
+
+
+    #Caching
+    order_id = 178
+    query = "SELECT * FROM OrderDetails WHERE OrderID = %s"
+    start_time = time.time()
+    data = get_data_with_caching(query, (order_id,))
+    end_time = time.time()
+    print(f"Data: {data}")
+    print(f"Time taken for the first call: {end_time - start_time} seconds")
+
+    # Timing the second call (cached)
+    start_time = time.time()
+    data = get_data_with_caching(query, (order_id,))
+    end_time = time.time()
+    print(f"Data: {data}")
+    print(f"Time taken for the second call: {end_time - start_time} seconds")
 
 
     pass
