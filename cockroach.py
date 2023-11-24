@@ -5,6 +5,7 @@ from datetime import datetime
 from create_table_calls import create_database_tables, insert_supplier_data_from_csv, insert_manufacturer_data_from_csv
 from create_table_calls import insert_mobilephone_data_from_csv, insert_warehouse_data_from_csv, insert_inventory_data_from_csv
 from create_table_calls import insert_orders_data_from_csv, insert_order_details_data_from_csv
+from create_indexing import create_index
 
     # SQL statements to create tables
 drop_table_sql=["""    
@@ -119,13 +120,15 @@ def vertical_fragmentation():
         print(E)
 
 if __name__ == "__main__":
-    create_database_tables(drop_table_sql,create_tables_sql)
-    insert_supplier_data_from_csv('InputData/Supplier.csv')
-    insert_manufacturer_data_from_csv('InputData/Manufacturer.csv')
-    insert_mobilephone_data_from_csv('InputData/MobilePhone.csv')
-    insert_warehouse_data_from_csv('InputData/Warehouse.csv')
-    insert_inventory_data_from_csv('InputData/Inventory.csv')
-    insert_orders_data_from_csv('InputData/Order.csv')
-    insert_order_details_data_from_csv('InputData/OrderDetails.csv')
-    vertical_fragmentation()
+    #create_database_tables(drop_table_sql,create_tables_sql)
+    #insert_supplier_data_from_csv('InputData/Supplier.csv')
+    #insert_manufacturer_data_from_csv('InputData/Manufacturer.csv')
+    # insert_mobilephone_data_from_csv('InputData/MobilePhone.csv')
+    # insert_warehouse_data_from_csv('InputData/Warehouse.csv')
+    # insert_inventory_data_from_csv('InputData/Inventory.csv')
+    # insert_orders_data_from_csv('InputData/Order.csv')
+    # insert_order_details_data_from_csv('InputData/OrderDetails.csv')
+    # vertical_fragmentation()
+    create_index('Supplier', 'SupplierName')
+    create_index('Inventory', 'Quantity')
     pass
