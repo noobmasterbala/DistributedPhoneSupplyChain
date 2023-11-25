@@ -94,6 +94,8 @@ create_tables_sql = [
     """
 ]
 
+
+
 def vertical_fragmentation():
     conn = psycopg2.connect(os.environ["DATABASE_URL"])
     cursor = conn.cursor()
@@ -164,12 +166,15 @@ if __name__ == "__main__":
     # insert_orders_data_from_csv('InputData/Order.csv')
     # insert_order_details_data_from_csv('InputData/OrderDetails.csv')
     # vertical_fragmentation()
+    
+
+
+
+    #PART 3 OPTIMIZATION
     #create_index('Supplier', 'SupplierName')
     #create_index('Inventory', 'Quantity')
     #create_index('OrderDetails', 'OrderID')
     #check_index_performance('OrderDetails', 'OrderID', '178')
-
-
 
     #Caching
     order_id = 178
