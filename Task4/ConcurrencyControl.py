@@ -1,11 +1,12 @@
 import psycopg2
+import os
 
 class ConcurrencyControl:
     def __init__(self, connection_string):
         self.connection_string = connection_string
 
     def reduce_inventory_quantity(self):
-        conn = psycopg2.connect(self.connection_string)
+        conn = psycopg2.connect(os.environ["DATABASE_URL"])
         try:
             with conn.cursor() as cur:
                 cur.execute("UPDATE Inventory SET Quantity = Quantity - 10;")
@@ -17,7 +18,7 @@ class ConcurrencyControl:
             conn.close()
 
     def fetch_original_quantities(self):
-        conn = psycopg2.connect(self.connection_string)
+        conn = psycopg2.connect(os.environ["DATABASE_URL"])
         try:
             with conn.cursor() as cur:
                 cur.execute("SELECT InventoryID, Quantity FROM Inventory ORDER BY InventoryID;")
@@ -26,7 +27,7 @@ class ConcurrencyControl:
             conn.close()
 
     def verify_quantities(self, original_quantities):
-        conn = psycopg2.connect(self.connection_string)
+        conn = psycopg2.connect(os.environ["DATABASE_URL"])
         try:
             with conn.cursor() as cur:
                 cur.execute("SELECT InventoryID, Quantity FROM Inventory ORDER BY InventoryID;")

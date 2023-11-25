@@ -1,5 +1,5 @@
 import threading
-import ConcurrencyControl
+from ConcurrencyControl import ConcurrencyControl
 
 
 class Task4:
@@ -25,8 +25,8 @@ class Task4:
     def main():
         connection_string = "your_connection_string"  # Replace with your actual connection string
         inventory_operations = ConcurrencyControl(connection_string)
-        inventory_manager = ConcurrencyControl(inventory_operations)
-        inventory_manager.run()
+        task4 = Task4(inventory_operations)
+        task4.run()
 
 if __name__ == "__main__":
     
