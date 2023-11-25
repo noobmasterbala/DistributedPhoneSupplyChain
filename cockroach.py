@@ -155,8 +155,20 @@ def check_index_performance(table_name, column_name, search_value):
         conn.close()
 
 
+def check_data_insertion():
+    conn = psycopg2.connect(os.environ["DATABASE_URL"])
+    cursor = conn.cursor()
+    for table in ['Supplier', 'Manufacturer', 'MobilePhone', 'Warehouse', 'Inventory', 'Orders', 'OrderDetails']:
+        cursor.execute(f"SELECT * FROM {table} LIMIT 2;") 
+        results = cursor.fetchall() 
+        print(f"Data from {table}: {results}") 
+    cursor.close()
+    conn.close()
 
 if __name__ == "__main__":
+
+
+    #PART 1
     # create_database_tables(drop_table_sql,create_tables_sql)
     # insert_supplier_data_from_csv('InputData/Supplier.csv')
     # insert_manufacturer_data_from_csv('InputData/Manufacturer.csv')
@@ -165,6 +177,10 @@ if __name__ == "__main__":
     # insert_inventory_data_from_csv('InputData/Inventory.csv')
     # insert_orders_data_from_csv('InputData/Order.csv')
     # insert_order_details_data_from_csv('InputData/OrderDetails.csv')
+    check_data_insertion()
+
+
+    #PART 2
     # vertical_fragmentation()
     
 
@@ -177,20 +193,20 @@ if __name__ == "__main__":
     #check_index_performance('OrderDetails', 'OrderID', '178')
 
     #Caching
-    order_id = 178
-    query = "SELECT * FROM OrderDetails WHERE OrderID = %s"
-    start_time = time.time()
-    data = get_data_with_caching(query, (order_id,))
-    end_time = time.time()
-    print(f"Data: {data}")
-    print(f"Time taken for the first call: {end_time - start_time} seconds")
+    # order_id = 178
+    # query = "SELECT * FROM OrderDetails WHERE OrderID = %s"
+    # start_time = time.time()
+    # data = get_data_with_caching(query, (order_id,))
+    # end_time = time.time()
+    # print(f"Data: {data}")
+    # print(f"Time taken for the first call: {end_time - start_time} seconds")
 
-    # Timing the second call (cached)
-    start_time = time.time()
-    data = get_data_with_caching(query, (order_id,))
-    end_time = time.time()
-    print(f"Data: {data}")
-    print(f"Time taken for the second call: {end_time - start_time} seconds")
+    # # Timing the second call (cached)
+    # start_time = time.time()
+    # data = get_data_with_caching(query, (order_id,))
+    # end_time = time.time()
+    # print(f"Data: {data}")
+    # print(f"Time taken for the second call: {end_time - start_time} seconds")
 
 
     pass
