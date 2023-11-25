@@ -177,7 +177,7 @@ if __name__ == "__main__":
     # insert_inventory_data_from_csv('InputData/Inventory.csv')
     # insert_orders_data_from_csv('InputData/Order.csv')
     # insert_order_details_data_from_csv('InputData/OrderDetails.csv')
-    check_data_insertion()
+    #check_data_insertion()
 
 
     #PART 2
@@ -185,28 +185,28 @@ if __name__ == "__main__":
     
 
 
-
     #PART 3 OPTIMIZATION
-    #create_index('Supplier', 'SupplierName')
-    #create_index('Inventory', 'Quantity')
-    #create_index('OrderDetails', 'OrderID')
-    #check_index_performance('OrderDetails', 'OrderID', '178')
+    #Indexing
+    create_index('Supplier', 'SupplierName')
+    create_index('Inventory', 'Quantity')
+    create_index('OrderDetails', 'OrderID')
+    check_index_performance('OrderDetails', 'OrderID', '178')
 
     #Caching
-    # order_id = 178
-    # query = "SELECT * FROM OrderDetails WHERE OrderID = %s"
-    # start_time = time.time()
-    # data = get_data_with_caching(query, (order_id,))
-    # end_time = time.time()
-    # print(f"Data: {data}")
-    # print(f"Time taken for the first call: {end_time - start_time} seconds")
+    order_id = 178
+    query = "SELECT * FROM OrderDetails WHERE OrderID = %s"
+    start_time = time.time()
+    data = get_data_with_caching(query, (order_id,))
+    end_time = time.time()
+    print(f"Data: {data}")
+    print(f"Time taken for the first call: {end_time - start_time} seconds")
 
-    # # Timing the second call (cached)
-    # start_time = time.time()
-    # data = get_data_with_caching(query, (order_id,))
-    # end_time = time.time()
-    # print(f"Data: {data}")
-    # print(f"Time taken for the second call: {end_time - start_time} seconds")
+    # Timing the second call (cached)
+    start_time = time.time()
+    data = get_data_with_caching(query, (order_id,))
+    end_time = time.time()
+    print(f"Data: {data}")
+    print(f"Time taken for the second call: {end_time - start_time} seconds")
 
 
     pass
