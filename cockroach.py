@@ -2,12 +2,14 @@ import os
 import csv
 import time
 import psycopg2
+import random
 from datetime import datetime
 from create_table_calls import create_database_tables, insert_supplier_data_from_csv, insert_manufacturer_data_from_csv
 from create_table_calls import insert_mobilephone_data_from_csv, insert_warehouse_data_from_csv, insert_inventory_data_from_csv
 from create_table_calls import insert_orders_data_from_csv, insert_order_details_data_from_csv
 from create_indexing import create_index
 from create_caching import get_data_with_caching
+
 
     # SQL statements to create tables
 drop_table_sql=["""    
@@ -165,6 +167,18 @@ def check_data_insertion():
     cursor.close()
     conn.close()
 
+
+def check_data_insertion_random_sample():
+    conn = psycopg2.connect(os.environ["DATABASE_URL"])
+    cursor = conn.cursor()
+    for table in ['Supplier', 'Manufacturer', 'MobilePhone', 'Warehouse', 'Inventory', 'Orders', 'OrderDetails']:
+        cursor.execute(f"SELECT * FROM {table} ORDER BY RANDOM() LIMIT 10;") 
+        results = cursor.fetchall() 
+        print(f"Random sample from {table}: {results}") 
+    cursor.close()
+    conn.close()
+
+
 if __name__ == "__main__":
 
 
@@ -208,5 +222,7 @@ if __name__ == "__main__":
     print(f"Data: {data}")
     print(f"Time taken for the second call: {end_time - start_time} seconds")
 
+    # Call the function to check data insertion with random samples -> Proof
+    check_data_insertion_random_sample()
 
     pass
