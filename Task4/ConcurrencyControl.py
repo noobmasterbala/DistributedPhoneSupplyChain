@@ -40,4 +40,5 @@ class ConcurrencyControl:
         except Exception as e:
             print(f"Verification Error: {e}")
         finally:
+            print("entering finally")
             conn.close()
