@@ -7,8 +7,8 @@ from datetime import datetime
 from create_table_calls import create_database_tables, insert_supplier_data_from_csv, insert_manufacturer_data_from_csv
 from create_table_calls import insert_mobilephone_data_from_csv, insert_warehouse_data_from_csv, insert_inventory_data_from_csv
 from create_table_calls import insert_orders_data_from_csv, insert_order_details_data_from_csv
-from create_indexing import create_index
-from create_caching import get_data_with_caching
+from Task3.create_indexing import create_index
+from Task3.create_caching import get_data_with_caching
 
 
     # SQL statements to create tables
