@@ -18,7 +18,7 @@ def retrieve_manufacturer(db):
         # print(mobilephone)
         l+=1
         sample_mobilephone = mobilephone
-    print("\n \n Number of mobilephones manufactured in 2021", l)
+    print("\n \n Number of mobilephones manufactured in 2021 : ", l)
     print("Sample retrieval data from manufacturer :", sample_mobilephone)
 
 
