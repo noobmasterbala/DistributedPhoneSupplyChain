@@ -1,5 +1,5 @@
-from Task3.create_indexing import create_index, check_index_performance
-from Task3.create_caching import get_data_with_caching, check_data_insertion_random_sample
+from create_indexing import create_index, check_index_performance
+from create_caching import get_data_with_caching, check_data_insertion_random_sample
 import time
 
 
@@ -30,5 +30,3 @@ if __name__ =="__main__":
 
     # Call the function to check data insertion with random samples -> Proof
     check_data_insertion_random_sample()
-
-    pass
