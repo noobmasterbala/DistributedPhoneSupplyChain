@@ -13,17 +13,19 @@ class RetryMechanism:
         conn = psycopg2.connect(os.environ["DATABASE_URL"])
         cur = conn.cursor()
         try:
+            print("Starting transaction to show the implemented Retry mechanism...")
             # Simulate a random failure
             if self.fail:
                 self.fail = False
                 raise Exception("Simulated Transaction Failure")
-            # Perform successful operation here
+            print("Updating inventory...")
             cur.execute("UPDATE Inventory SET Quantity = Quantity - 10;")
             cur.execute("COMMIT;")
-            print("Transaction Succeeded")
+            print("Transaction Succeeded: Inventory updated")
         except Exception as e:
             print(f"Transaction Failed with error: {e}")
             cur.execute("ROLLBACK;")
             raise
         finally:
+            print("Closing connection...")
             conn.close()

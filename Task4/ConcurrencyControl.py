@@ -9,27 +9,32 @@ class ConcurrencyControl:
         conn = psycopg2.connect(os.environ["DATABASE_URL"])
         try:
             with conn.cursor() as cur:
+                print("Reducing inventory quantity...")
                 cur.execute("UPDATE Inventory SET Quantity = Quantity - 10;")
                 cur.execute("COMMIT;")
+                print("Inventory quantity reduced.")
         except Exception as e:
-            print(f"Error: {e}")
+            print(f"Error reducing inventory quantity: {e}")
         finally:
-            
+            print("Closing connection after reducing inventory...")
             conn.close()
 
     def fetch_original_quantities(self):
         conn = psycopg2.connect(os.environ["DATABASE_URL"])
         try:
             with conn.cursor() as cur:
+                print("Fetching original quantities for Concurrency control...")
                 cur.execute("SELECT InventoryID, Quantity FROM Inventory ORDER BY InventoryID;")
                 return cur.fetchall()
         finally:
+            print("Closing connection after fetching original quantities...")
             conn.close()
 
     def verify_quantities(self, original_quantities):
         conn = psycopg2.connect(os.environ["DATABASE_URL"])
         try:
             with conn.cursor() as cur:
+                print("Verifying quantities...")
                 cur.execute("SELECT InventoryID, Quantity FROM Inventory ORDER BY InventoryID;")
                 updated_quantities = cur.fetchall()
 
@@ -40,5 +45,5 @@ class ConcurrencyControl:
         except Exception as e:
             print(f"Verification Error: {e}")
         finally:
-            print("entering finally")
+            print("Closing connection after verifying quantities...")
             conn.close()
