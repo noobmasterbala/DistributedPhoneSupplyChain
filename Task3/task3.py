@@ -10,6 +10,7 @@ if __name__ =="__main__":
     create_index('Supplier', 'SupplierName')
     create_index('Inventory', 'Quantity')
     create_index('OrderDetails', 'OrderID')
+    print(" \n After Indexing:")
     check_index_performance('OrderDetails', 'OrderID', '178')
 
     #Caching
@@ -27,6 +28,3 @@ if __name__ =="__main__":
     end_time = time.time()
     print(f"Data: {data}")
     print(f"Time taken for the second call: {end_time - start_time} seconds")
-
-    # Call the function to check data insertion with random samples -> Proof
-    check_data_insertion_random_sample()
