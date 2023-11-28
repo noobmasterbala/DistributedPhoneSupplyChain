@@ -13,9 +13,10 @@ class Task4:
         # Fetch original quantities
         original_quantities = self.inventory_operations.fetch_original_quantities()
 
+        print("We reduce the quantities of inventory from two threads and verify that the transactions are executed in correct sequence")
         # Create and start threads
-        thread1 = threading.Thread(target=self.inventory_operations.reduce_inventory_quantity)
-        thread2 = threading.Thread(target=self.inventory_operations.reduce_inventory_quantity)
+        thread1 = threading.Thread(target=self.inventory_operations.reduce_inventory_quantity, name = "Thread1")
+        thread2 = threading.Thread(target=self.inventory_operations.reduce_inventory_quantity, name = "Thread2")
         thread1.start()
         thread2.start()
         thread1.join()
@@ -30,7 +31,7 @@ class Task4:
     def main():
         connection_string = os.environ["DATABASE_URL"]  # Replace with your actual connection string
         inventory_operations = ConcurrencyControl(connection_string)
-        retryMech = RetryMechanism(connection_string);
+        retryMech = RetryMechanism(connection_string)
         task4 = Task4(inventory_operations, retryMech)
         task4.run()
 

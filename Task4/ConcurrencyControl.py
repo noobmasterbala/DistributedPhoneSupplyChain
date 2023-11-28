@@ -1,22 +1,25 @@
 import psycopg2
 import os
+import threading
+import time
 
 class ConcurrencyControl:
     def __init__(self, connection_string):
         self.connection_string = connection_string
 
     def reduce_inventory_quantity(self):
+        current_thread = threading.current_thread()
+        time.sleep(5)
         conn = psycopg2.connect(os.environ["DATABASE_URL"])
         try:
             with conn.cursor() as cur:
-                print("Reducing inventory quantity...")
+                print(f"Reducing inventory quantity from thread: {current_thread.name}")
                 cur.execute("UPDATE Inventory SET Quantity = Quantity - 10;")
                 cur.execute("COMMIT;")
-                print("Inventory quantity reduced.")
+                print(f"Inventory quantity reduced from the thread:  {current_thread.name}")
         except Exception as e:
             print(f"Error reducing inventory quantity: {e}")
         finally:
-            print("Closing connection after reducing inventory...")
             conn.close()
 
     def fetch_original_quantities(self):
@@ -27,7 +30,6 @@ class ConcurrencyControl:
                 cur.execute("SELECT InventoryID, Quantity FROM Inventory ORDER BY InventoryID;")
                 return cur.fetchall()
         finally:
-            print("Closing connection after fetching original quantities...")
             conn.close()
 
     def verify_quantities(self, original_quantities):
