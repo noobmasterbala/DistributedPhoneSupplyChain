@@ -4,7 +4,7 @@ from crud_operations import crud_create, crud_read, crud_update, crud_delete
 from sample_queries import retrieve_suppliers, retrieve_manufacturer, retrieve_inventory, retrieve_order, retrieve_warehouses
 
 # MongoDB connection string
-uri = "mongodb+srv://supply_user:phone@phonesupplychain.zdj9qzg.mongodb.net/?retryWrites=true&w=majority"
+uri = "mongodb+srv://user:password@phonesupplychain.zdj9qzg.mongodb.net/?retryWrites=true&w=majority"
 
 # Create a new client and connect to the server
 client = MongoClient(uri, server_api=ServerApi('1'))
